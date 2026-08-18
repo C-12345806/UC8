@@ -1,90 +1,143 @@
-const btnGravador = document.getElementById("btn-gravador");
+const gravador = document.getElementById("btn-gravador");
 const statusGravacao = document.getElementById("status-gravacao");
+const playerAudio = document.getElementById("player-audio");
 
-// Quando o usuário pressionar o botão
-btnGravador.addEventListener("pointerdown", () => {
-    btnGravador.style.backgroundColor = "#e74c3c";
-    btnGravador.textContent = "🔴 Gravando... Não solte!";
+let gravando = null;
+let audio = [];
+let streamAtual = null;
 
-    statusGravacao.textContent = "Status: Capturando áudio...";
-});
+// Escolhe automaticamente um formato compatível
+function escolherFormato() {
 
-// Quando o usuário soltar o botão
-btnGravador.addEventListener("pointerup", () => {
-    btnGravador.style.backgroundColor = "#3498db";
-    btnGravador.textContent = "🎤 Clique e Segure para Gravar";
+    const formatos = [
+        "audio/mp4",
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus"
+    ];
 
-    statusGravacao.textContent = "Status: Gravação concluída e enviada!";
-});
-
-        // Caso o toque seja cancelado (ex: chamada no celular)
-btnGravador.addEventListener('pointercancel', () => {
-  resetarBotao();
-});
-       const btnGravar = document.getElementById("btnGravar");
-const audioPlayer = document.getElementById("audioPlayer");
-
-let recorder;
-let audioChunks = [];
-
-btnGravar.addEventListener("click", async () => {
-
-    // Começar gravação
-    if (!recorder || recorder.state === "inactive") {
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
-
-        recorder = new MediaRecorder(stream);
-        audioChunks = [];
-
-        recorder.ondataavailable = (event) => {
-            audioChunks.push(event.data);
-        };
-
-        recorder.onstop = () => {
-
-            const audioBlob = new Blob(audioChunks, {
-                type: "audio/webm"
-            });
-
-            const audioURL = URL.createObjectURL(audioBlob);
-
-            audioPlayer.src = audioURL;
-
-            // Libera o microfone
-            stream.getTracks().forEach(track => track.stop());
-        };
-
-        recorder.start();
-
-        btnGravar.textContent = "⏹️ Parar gravação";
-
-    } else {
-
-        // Parar gravação
-        recorder.stop();
-
-        btnGravar.textContent = "🎙️ Gravar novamente";
+    for (const formato of formatos) {
+        if (MediaRecorder.isTypeSupported(formato)) {
+            return formato;
+        }
     }
+
+    return "";
+}
+
+// Começar a gravar
+function iniciarGravacao() {
+
+    if (gravando) return;
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function (stream) {
+
+            streamAtual = stream;
+            audio = [];
+
+            const formato = escolherFormato();
+
+            console.log("Formato utilizado:", formato);
+
+            if (formato) {
+                gravando = new MediaRecorder(stream, {
+                    mimeType: formato
+                });
+            } else {
+                gravando = new MediaRecorder(stream);
+            }
+
+            gravando.ondataavailable = function (event) {
+
+                if (event.data && event.data.size > 0) {
+                    audio.push(event.data);
+                }
+
+            };
+
+            gravando.onstop = function () {
+
+                const tipoAudio = gravando.mimeType || "audio/mp4";
+
+                const arquivo = new Blob(audio, {
+                    type: tipoAudio
+                });
+
+                const urlAudio = URL.createObjectURL(arquivo);
+
+                playerAudio.src = urlAudio;
+                playerAudio.style.display = "block";
+
+                statusGravacao.textContent =
+                    "Status: Gravação concluída!";
+
+                if (streamAtual) {
+
+                    streamAtual.getTracks().forEach(function (track) {
+                        track.stop();
+                    });
+
+                    streamAtual = null;
+                }
+
+                gravando = null;
+                audio = [];
+            };
+
+            gravando.start();
+
+            statusGravacao.textContent =
+                "Status: Capturando áudio...";
+
+            gravador.style.backgroundColor = "#e74c3c";
+            gravador.textContent =
+                "🔴 Gravando... Não solte!";
+        })
+        .catch(function (erro) {
+
+            console.error("Erro ao acessar o microfone:", erro);
+
+            statusGravacao.textContent =
+                "Status: Não foi possível acessar o microfone.";
+
+            gravando = null;
+        });
+}
+
+
+// Parar de gravar
+function pararGravacao() {
+
+    if (gravando && gravando.state !== "inactive") {
+
+        gravando.stop();
+
+        gravador.style.backgroundColor = "#3498db";
+
+        gravador.textContent =
+            "🎤 Clique e Segure para Gravar";
+    }
+}
+
+
+// Pressionar o botão
+gravador.addEventListener("pointerdown", function () {
+    iniciarGravacao();
 });
 
-mediaRecorder.onstop = function () {
 
-    const audioBlob = new Blob(audioChunks, {
-        type: "audio/webm"
-    });
+// Soltar o botão
+gravador.addEventListener("pointerup", function () {
+    pararGravacao();
+});
 
-    const audioURL = URL.createObjectURL(audioBlob);
 
-    // Coloca o áudio no player
-    audioPlayer.src = audioURL;
+// Caso o dedo/mouse saia do botão
+gravador.addEventListener("pointerleave", function (evento) {
 
-    // MOSTRA O CARD SOMENTE AGORA
-    document.getElementById("cardAudio").style.display = "block";
+    if (evento.buttons > 0) {
+        pararGravacao();
+    }
 
-    status.textContent = "Status: Gravação concluída e enviada!";
-
-    stream.getTracks().forEach(track => track.stop());
-};
+});
