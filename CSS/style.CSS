@@ -1,68 +1,334 @@
+/* =====================================================
+   RESET
+   ===================================================== */
+
+/* Remove as margens e espaçamentos padrão dos elementos */
 * {
     margin: 0;
     padding: 0;
+
+    /* Faz o tamanho dos elementos incluir
+       o padding e a borda */
     box-sizing: border-box;
 }
 
+
+/* =====================================================
+   CONFIGURAÇÕES GERAIS DA PÁGINA
+   ===================================================== */
+
 body {
+
+    /* Define a fonte padrão da página */
     font-family: Arial, sans-serif;
-    background-color: #ceecfc;
+
+    /* Define a cor de fundo */
+    background: #ceecfc;
+
+    /* Define a cor padrão dos textos */
+    color: #222;
+
+    /* Garante que o body ocupe pelo menos
+       toda a altura da tela */
     min-height: 100vh;
-    padding: 40px;
 }
+
+
+/* =====================================================
+   CABEÇALHO
+   ===================================================== */
+
+header {
+
+    /* Centraliza o conteúdo do cabeçalho */
+    text-align: center;
+
+    /* Define o espaçamento interno do cabeçalho */
+    padding: 50px 20px 30px;
+}
+
 
 h1 {
+    font-family: "Waltograph", cursive;
+    font-size: 70px;
     text-align: center;
-    color: #2874A6;
-    margin-bottom: 40px;
-    font-size: 40px;
+}
+@font-face {
+    font-family: "Waltograph";
+    src: url("../fonts/waltograph42.otf") format("opentype");
 }
 
-.cards {
+/* Estiliza o texto que mostra a quantidade
+   de personagens carregados */
+header p {
+
+    /* Define a cor do texto */
+    color: #000000;
+
+    /* Define o tamanho da fonte */
+    font-size: 18px;
+
+    /* Utiliza a fonte Waltograph */
+    font-family:Arial, Helvetica, sans-serif
+}
+
+
+/* Define a fonte dos nomes dos personagens */
+h2 {
+    font-family:Arial, Helvetica, sans-serif
+}
+
+
+/* =====================================================
+   CARDS
+   ===================================================== */
+
+/* Container que organiza todos os cards */
+.cards-container {
+
+    /* Utiliza CSS Grid para organizar os cards */
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+
+    /* Cria colunas automaticamente de acordo
+       com o tamanho disponível da tela */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+    /* Define o espaço entre os cards */
     gap: 20px;
-    max-width: 1100px;
+
+    /* Define a largura máxima do conteúdo */
+    max-width: 1200px;
+
+    /* Centraliza o container */
     margin: 0 auto;
+
+    /* Define um espaçamento interno */
+    padding: 20px;
 }
 
+
+/* Estiliza cada card individual */
 .card {
-    background-color: white;
-    padding: 100px 50px;
-    border-radius: 15px;
+
+    /* Define o fundo branco do card */
+    background: white;
+
+    /* Arredonda os cantos do card */
+    border-radius: 18px;
+
+    /* Espaçamento interno */
+    padding: 20px;
+
+    /* Centraliza o conteúdo */
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    transition: 0.3s;
+
+    /* Define uma altura mínima para o card */
+    min-height: 250px;
+
+    /* Cria uma sombra ao redor do card */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+
+    /* Cria uma animação suave para transformações
+       e alterações na sombra */
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
+
+/* Efeito aplicado quando o mouse passa sobre o card */
 .card:hover {
-    transform: translateY(-10px);
-    background-color: #ffe066;
+
+    /* Faz o card subir levemente */
+    transform: translateY(-8px);
+
+    /* Aumenta a sombra do card */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20);
 }
+
+
+/* =====================================================
+   IMAGEM DOS PERSONAGENS
+   ===================================================== */
+
+.card img {
+
+    /* Faz a imagem ocupar toda a largura disponível */
+    width: 100%;
+
+    /* Define a altura da imagem */
+    height: 180px;
+
+    /* Mantém a proporção da imagem
+       sem deformá-la */
+    object-fit: contain;
+
+    /* Arredonda os cantos da imagem */
+    border-radius: 12px;
+
+    /* Cria espaço abaixo da imagem */
+    margin-bottom: 15px;
+}
+
+
+/* =====================================================
+   NOME DOS PERSONAGENS
+   ===================================================== */
 
 .card h2 {
-    color: #333;
+
+    /* Define a cor do nome */
+    color: #1769aa;
+
+    /* Define o tamanho do nome */
     font-size: 20px;
 }
 
-/* Tablet */
-@media (max-width: 800px) {
-    .cards {
+
+/* =====================================================
+   CONTROLES DA PAGINAÇÃO
+   ===================================================== */
+
+.controles {
+
+    /* Centraliza o botão e o número da página */
+    text-align: center;
+
+    /* Define o espaçamento interno */
+    padding: 30px 20px 50px;
+}
+
+
+/* =====================================================
+   BOTÃO
+   ===================================================== */
+
+/* Estiliza o botão "Carregar mais 50" */
+#botaoCarregar {
+
+    /* Define a cor de fundo do botão */
+    background-color: #1769aa;
+
+    /* Define a cor do texto */
+    color: white;
+
+    /* Define o tamanho da fonte */
+    font-size: 17px;
+
+    /* Deixa o texto em negrito */
+    font-weight: bold;
+
+    /* Define o espaçamento interno */
+    padding: 15px 30px;
+
+    /* Remove a borda padrão */
+    border: none;
+
+    /* Arredonda os cantos */
+    border-radius: 10px;
+
+    /* Mostra o cursor de mão ao passar sobre o botão */
+    cursor: pointer;
+
+    /* Cria uma transição suave nos efeitos */
+    transition: 0.3s;
+}
+
+
+/* Efeito quando o mouse passa sobre o botão */
+#botaoCarregar:hover {
+
+    /* Escurece a cor do botão */
+    background-color: #0f4d92;
+
+    /* Aumenta o botão levemente */
+    transform: scale(1.05);
+}
+
+
+/* Estilo do botão enquanto estiver desabilitado */
+#botaoCarregar:disabled {
+
+    /* Define uma cor cinza */
+    background-color: #999;
+
+    /* Mostra que o botão não pode ser clicado */
+    cursor: not-allowed;
+
+    /* Remove o efeito de aumento */
+    transform: none;
+}
+
+
+/* =====================================================
+   NÚMERO DA PÁGINA
+   ===================================================== */
+
+#pagina {
+
+    /* Cria espaço entre o botão e o texto */
+    margin-top: 15px;
+
+    /* Define a cor do texto */
+    color: #555;
+
+    /* Define o tamanho da fonte */
+    font-size: 17px;
+}
+
+
+/* =====================================================
+   TABLET
+   ===================================================== */
+
+/* Essas regras serão aplicadas em telas
+   com largura de até 900px */
+@media (max-width: 900px) {
+
+    .cards-container {
+
+        /* Em tablets, os cards ficam em duas colunas */
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Celular */
-@media (max-width: 500px) {
-    .cards {
-        grid-template-columns: 1fr;
+
+/* =====================================================
+   CELULAR
+   ===================================================== */
+
+/* Essas regras serão aplicadas em telas
+   com largura de até 600px */
+@media (max-width: 600px) {
+
+    /* Diminui o espaçamento do cabeçalho */
+    header {
+        padding: 35px 15px 20px;
     }
 
-    body {
-        padding: 20px;
-    }
 
-    h1 {
+    /* Diminui o tamanho do título */
+    header h1 {
         font-size: 30px;
+    }
+
+
+    /* Diminui o tamanho do contador */
+    header p {
+        font-size: 16px;
+    }
+
+
+    /* Em celulares, os cards ficam
+       um abaixo do outro */
+    .cards-container {
+        grid-template-columns: 1fr;
+
+        /* Ocupa 90% da largura da tela */
+        width: 90%;
+    }
+
+
+    /* Faz o botão ocupar 90% da largura */
+    #botaoCarregar {
+        width: 90%;
     }
 }
